@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     micrograd (0.1.0)
+      ruby-graphviz
 
 GEM
   remote: https://rubygems.org/
@@ -29,6 +30,9 @@ GEM
       tsort
     reline (0.6.3)
       io-console (~> 0.5)
+    rexml (3.4.0)
+    ruby-graphviz (1.2.5)
+      rexml
     stringio (3.2.0)
     tsort (0.2.0)
 
