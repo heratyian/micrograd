@@ -14,44 +14,59 @@ module Micrograd
     end
 
     # Return a new Value object with the sum of combined data
-    #  
+    #
     # = Example
     #   a = Value.new(-4.0)
     #   b = Value.new(2.0)
     #   c = a + b
     def +(other)
-      other = if other.is_a?(Value)
-        other
-      else 
-        Value.new(other)
-      end
+      other = other.is_a?(Value) ? other : Value.new(other)
 
       output = Value.new(
         @data + other.data,
         children: [self, other],
         operation: '+'
       )
-      
+
       output.backward = -> do
-        @gradient += 1.0 * output.gradient
-        other.gradient += 1.0 * output.gradient
+        @gradient += output.gradient
+        other.gradient += output.gradient
+      end
+
+      output
+    end
+
+    # Return a new Value object with the difference of combined data
+    #
+    # = Example
+    #   a = Value.new(-4.0)
+    #   b = Value.new(2.0)
+    #   c = a - b
+    def -(other)
+      other = other.is_a?(Value) ? other : Value.new(other)
+
+      output = Value.new(
+        @data - other.data,
+        children: [self, other],
+        operation: '-'
+      )
+
+      output.backward = -> do
+        self.gradient += output.gradient
+        other.gradient -= output.gradient
       end
 
       output
     end
 
     # Return a new Value object with the product of combined data
-    #  
+    #
     # = Example
     #   a = Value.new(-4.0)
     #   b = Value.new(2.0)
     #   c = a * b
     def *(other)
-      other = if other.is_a?(Value)
-        other
-      else 
-        Value.new(other)
-      end
+      other = other.is_a?(Value) ? other : Value.new(other)
 
       output = Value.new(
         @data * other.data,
@@ -67,12 +82,34 @@ module Micrograd
       output
     end
 
-    # Return a new Value object to the power of combined data
+    # Return a new Value object with the division of combined data
     #
     # = Example
     #   a = Value.new(-4.0)
     #   b = Value.new(2.0)
-    #   c = a ** b
+    #   c = a / b
+    def /(other)
+      other = other.is_a?(Value) ? other : Value.new(other)
+
+      output = Value.new(
+        @data / other.data,
+        children: [self, other],
+        operation: '/'
+      )
+
+      output.backward = -> do
+        self.gradient += (1.0 / other.data) * output.gradient
+        other.gradient += (-self.data / (other.data**2)) * output.gradient
+      end
+
+      output
+    end
+
+    # Return a new Value object exponentiated
+    #
+    # = Example
+    #   a = Value.new(-4.0)
+    #   b = a ** 2
     def **(other)
       raise ArgumentError, "power must be a Numeric" unless other.is_a?(Numeric)
 

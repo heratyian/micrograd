@@ -6,7 +6,12 @@ c = Micrograd::Value.new(10.0, label: 'c')
 e = a * b; e.label = 'e'
 d = e + c; d.label = 'd'
 f = Micrograd::Value.new(-2.0, label: 'f')
-l = d * f; l.label = 'L';
+g = d * f; g.label = 'g';
+h = Micrograd::Value.new(5.0, label: 'h')
+i = g - h; i.label = 'i'
+
+i.backward!
+i.draw_dot
 
 # c += c + 1
 # c += 1 + c + (-a)
@@ -20,5 +25,8 @@ l = d * f; l.label = 'L';
 # g.backward()
 # puts "#{a.gradient}" # prints 138.8338, i.e. the numerical value of dg/da
 # puts "#{b.gradient}" # prints 645.5773, i.e. the numerical value of dg/db
-l.backward!
-l.draw_dot
+
+# l = d * f; l.label = 'L';
+
+# l.backward!
+# l.draw_dot
