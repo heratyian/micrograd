@@ -75,7 +75,7 @@ module Micrograd
       nodes.each do |n|
         uid = n.object_id.to_s
 
-        label = "{data #{n.data.round(4)} | gradient #{n.gradient.round(4)}}"
+        label = "{#{n.label} | data #{n.data.round(4)} | gradient #{n.gradient.round(4)}}"
 
         node_map[uid] = g.add_nodes(
           uid,
